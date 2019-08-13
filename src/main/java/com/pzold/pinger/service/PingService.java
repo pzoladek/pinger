@@ -25,6 +25,6 @@ public class PingService {
     @Scheduled(fixedRateString = "${scheduling.rate}")
     public void ping() {
         rateLimiter.acquire();
-        restTemplate.exchange(pingedApiUrl, HttpMethod.POST, null, Object.class);
+        restTemplate.exchange(pingedApiUrl, HttpMethod.GET, null, Object.class);
     }
 }
