@@ -4,13 +4,14 @@ import lombok.Builder;
 import lombok.Data;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "LOG_MESSAGE")
+@Table(name = "LOGS", schema = "logs")
 @Data
 @Builder
-public class LogMessage {
+public class LogMessage implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -20,7 +21,7 @@ public class LogMessage {
     @Column(name = "MESSAGE")
     private String message;
 
-    @Column(name = "TIMESTAMP")
+    @Column(name = "LOCAL_TIME")
     private LocalDateTime timestamp;
 
     @Column(name = "REQUEST_TIME")
