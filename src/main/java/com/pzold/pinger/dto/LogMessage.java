@@ -26,4 +26,8 @@ public class LogMessage {
         this.timestamp = timestamp;
         this.requestTimeMillis = requestTimeMillis;
     }
+
+    public static LogMessage of(com.pzold.pinger.model.LogMessage logMessage) {
+        return new LogMessage(logMessage.getMessage(), logMessage.getTimestamp(), logMessage.getRequestTimeMillis());
+    }
 }

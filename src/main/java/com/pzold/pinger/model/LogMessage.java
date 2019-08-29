@@ -1,7 +1,9 @@
 package com.pzold.pinger.model;
 
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -10,8 +12,15 @@ import java.time.LocalDateTime;
 @Entity
 @Table(name = "LOGS", schema = "logs")
 @Data
-@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class LogMessage implements Serializable {
+
+    public LogMessage(String message, LocalDateTime timestamp, Long requestTimeMillis) {
+        this.message = message;
+        this.timestamp = timestamp;
+        this.requestTimeMillis = requestTimeMillis;
+    }
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
