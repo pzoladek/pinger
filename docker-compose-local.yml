@@ -12,6 +12,10 @@ services:
       - db
     depends_on:
       - db
+    environment:
+      - PG_USER
+      - PG_PASS
+      - DB_URL
 
   db:
     image: postgres
