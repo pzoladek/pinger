@@ -1,7 +1,7 @@
 package com.pzold.pinger.controller;
 
 import com.pzold.pinger.dto.LogMessage;
-import com.pzold.pinger.service.PingService;
+import com.pzold.pinger.service.LogService;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -13,10 +13,10 @@ import java.util.List;
 @RequestMapping("/logs")
 public class LogController {
 
-    private final PingService pingService;
+    private final LogService logService;
 
-    LogController(final PingService pingService) {
-        this.pingService = pingService;
+    LogController(final LogService logService) {
+        this.logService = logService;
     }
 
     @GetMapping
@@ -26,11 +26,11 @@ public class LogController {
 
     @GetMapping("/recent")
     List<LogMessage> getRecentLogs() {
-        return pingService.getRecentPingLogs();
+        return logService.getRecentPingLogs();
     }
 
     @GetMapping("/all")
     List<LogMessage> getAllLogs() {
-        return pingService.getAllPingLogs();
+        return logService.getAllPingLogs();
     }
 }
