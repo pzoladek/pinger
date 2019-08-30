@@ -29,6 +29,13 @@ public class SubscriberService {
                 .collect(Collectors.toList());
     }
 
+    public void unsubscribe(final Subscriber subscriber) {
+        final var subscriptionUrl = subscriber.getUrl();
+        if (subscriberRepository.existsById(subscriptionUrl)) {
+            subscriberRepository.deleteById(subscriptionUrl);
+        }
+    }
+
     private com.pzold.pinger.model.Subscriber modelOf(Subscriber subscriber) {
         return new com.pzold.pinger.model.Subscriber(subscriber.getName(), subscriber.getUrl(), LocalDateTime.now());
     }
