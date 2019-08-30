@@ -1,7 +1,7 @@
 package com.pzold.pinger.model;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -9,19 +9,8 @@ import java.time.LocalDateTime;
 @Entity
 @Table(name = "SUBSCRIBERS", schema = "logs")
 @Data
-@NoArgsConstructor
+@AllArgsConstructor
 public class Subscriber {
-
-    public Subscriber(String name, String url, LocalDateTime subscriptionDate) {
-        this.name = name;
-        this.url = url;
-        this.subscriptionDate = subscriptionDate;
-    }
-
-//    @Id
-//    @GeneratedValue(strategy = GenerationType.IDENTITY)
-//    @Column(name = "ID")
-//    private Integer id;
 
     @Id
     @Column(name = "URL")
@@ -32,5 +21,4 @@ public class Subscriber {
 
     @Column(name = "SUBSCRIPTION_DATE")
     private LocalDateTime subscriptionDate;
-
 }
