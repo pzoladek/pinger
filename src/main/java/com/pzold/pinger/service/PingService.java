@@ -28,7 +28,7 @@ public class PingService {
         this.subscriberService = subscriberService;
     }
 
-    @Scheduled(fixedRateString = "${scheduling.rate}")
+    @Scheduled(fixedRateString = "${ping.scheduling.rate}")
     public void ping() {
         final var subscribers = subscriberService.getAllSubscribers();
         for (var subscriber : subscribers) {
@@ -40,7 +40,7 @@ public class PingService {
         try {
             final var response = restTemplate.exchange(subscriber.getUrl(), HttpMethod.GET, null, Object.class);
 
-            logRepository.save(
+            logRepository.saveAndFlush(
                     new LogMessage("Pinged " + subscriber.getName() + " with code " + response.getStatusCode().toString(),
                             LocalDateTime.now(),
                             retrieveRequestTime(response.getHeaders()))

@@ -2,6 +2,7 @@ package com.pzold.pinger.service;
 
 import com.pzold.pinger.dto.LogMessage;
 import com.pzold.pinger.repository.LogRepository;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -24,7 +25,7 @@ public class LogService {
     }
 
     public List<LogMessage> getAllPingLogs() {
-        return logRepository.findAll()
+        return logRepository.findAll(new Sort(Sort.Direction.DESC, "timestamp"))
                 .stream()
                 .map(LogMessage::of)
                 .collect(Collectors.toList());

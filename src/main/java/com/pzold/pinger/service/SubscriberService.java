@@ -37,7 +37,7 @@ public class SubscriberService {
     }
 
     private com.pzold.pinger.model.Subscriber modelOf(Subscriber subscriber) {
-        return new com.pzold.pinger.model.Subscriber(subscriber.getName(), subscriber.getUrl(), LocalDateTime.now());
+        return new com.pzold.pinger.model.Subscriber(subscriber.getUrl(), subscriber.getName(), LocalDateTime.now());
     }
 
     private void validateSubscriberName(final String dtoName, final String modelName) {
