@@ -8,7 +8,6 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
 import java.time.LocalDateTime;
@@ -30,22 +29,18 @@ public class PingService {
 
     @Scheduled(fixedRateString = "${ping.scheduling.rate}")
     public void ping() {
-        final var subscribers = subscriberService.getAllSubscribers();
-        for (var subscriber : subscribers) {
-            sendHttpGet(subscriber);
-        }
+        subscriberService.getAllSubscribers().forEach(this::sendHttpGet);
     }
 
     private void sendHttpGet(Subscriber subscriber) {
         try {
             final var response = restTemplate.exchange(subscriber.getUrl(), HttpMethod.GET, null, Object.class);
-
-            logRepository.saveAndFlush(
+            logRepository.save(
                     new LogMessage("Pinged " + subscriber.getName() + " with code " + response.getStatusCode().toString(),
                             LocalDateTime.now(),
                             retrieveRequestTime(response.getHeaders()))
             );
-        } catch (RestClientException e) {
+        } catch (Exception e) {
             e.printStackTrace();
             logRepository.save(
                     new LogMessage("Couldn't ping " + subscriber.getName(),

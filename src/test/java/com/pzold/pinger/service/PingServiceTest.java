@@ -65,7 +65,8 @@ public class PingServiceTest {
         pingServiceSpy.ping();
 
         // then
-        verify(logRepository).save(new LogMessage("Couldn't ping app-nam1", any(), -1L));
+        verify(logRepository).save(argThat(lm ->
+                lm.getMessage().equals("Couldn't ping app-name1") && lm.getRequestTimeMillis() == -1L));
     }
 
     @Test
@@ -77,8 +78,9 @@ public class PingServiceTest {
         // when
         pingServiceSpy.ping();
 
-        // then
-        verify(logRepository).save(new LogMessage("Pinged app-name2 with code 200 OK", any(), 1234L));
+        // then new LogMessage("Pinged app-name2 with code 200 OK", any(), 1234L)
+        verify(logRepository).save(argThat(lm ->
+                lm.getMessage().equals("Pinged app-name2 with code 200 OK") && lm.getRequestTimeMillis() == 1234L));
     }
 
 }
