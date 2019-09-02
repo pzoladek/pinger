@@ -1,7 +1,6 @@
 package com.pzold.pinger.service;
 
 import com.pzold.pinger.repository.LogRepository;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -29,11 +28,10 @@ public class PingService {
     public void ping() {
         final var subscribers = subscriberService.getAllSubscribers();
         for (var subscriber : subscribers) {
-            System.out.println(subscriber.toString());
             final var response = restTemplate.exchange(subscriber.getUrl(), HttpMethod.GET, null, Object.class);
 
-            logRepository.save(new com.pzold.pinger.model.LogMessage(
-                    "Pinged " + subscriber.getName() + " with code " + response.getStatusCode().toString(),
+            logRepository.save(
+                    new com.pzold.pinger.model.LogMessage("Pinged " + subscriber.getName() + " with code " + response.getStatusCode().toString(),
                     LocalDateTime.now(),
                     retrieveRequestTime(response.getHeaders()))
             );

@@ -18,7 +18,6 @@ public class SubscriberService {
     }
 
     public Subscriber subscribe(final Subscriber subscriber) {
-        System.out.println(subscriber.toString() + " service");
         return Subscriber.of(subscriberRepository.save(modelOf(subscriber)));
     }
 
@@ -32,12 +31,19 @@ public class SubscriberService {
     public void unsubscribe(final Subscriber subscriber) {
         final var subscriptionUrl = subscriber.getUrl();
         if (subscriberRepository.existsById(subscriptionUrl)) {
+            validateSubscriberName(subscriber.getName(), subscriberRepository.findById(subscriptionUrl).get().getName());
             subscriberRepository.deleteById(subscriptionUrl);
         }
     }
 
     private com.pzold.pinger.model.Subscriber modelOf(Subscriber subscriber) {
         return new com.pzold.pinger.model.Subscriber(subscriber.getName(), subscriber.getUrl(), LocalDateTime.now());
+    }
+
+    private void validateSubscriberName(final String dtoName, final String modelName) {
+        if (!dtoName.equalsIgnoreCase(modelName)) {
+            throw new IllegalArgumentException("Subscriber's name does not match subscribed website's name.");
+        }
     }
 
 }
