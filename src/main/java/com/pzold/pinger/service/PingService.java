@@ -1,10 +1,14 @@
 package com.pzold.pinger.service;
 
+import com.pzold.pinger.config.RestTemplateConfiguration;
+import com.pzold.pinger.dto.Subscriber;
+import com.pzold.pinger.model.LogMessage;
 import com.pzold.pinger.repository.LogRepository;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
 import java.time.LocalDateTime;
@@ -28,20 +32,34 @@ public class PingService {
     public void ping() {
         final var subscribers = subscriberService.getAllSubscribers();
         for (var subscriber : subscribers) {
+            sendHttpGet(subscriber);
+        }
+    }
+
+    private void sendHttpGet(Subscriber subscriber) {
+        try {
             final var response = restTemplate.exchange(subscriber.getUrl(), HttpMethod.GET, null, Object.class);
 
             logRepository.save(
-                    new com.pzold.pinger.model.LogMessage("Pinged " + subscriber.getName() + " with code " + response.getStatusCode().toString(),
-                    LocalDateTime.now(),
-                    retrieveRequestTime(response.getHeaders()))
+                    new LogMessage("Pinged " + subscriber.getName() + " with code " + response.getStatusCode().toString(),
+                            LocalDateTime.now(),
+                            retrieveRequestTime(response.getHeaders()))
+            );
+        } catch (RestClientException e) {
+            e.printStackTrace();
+            logRepository.save(
+                    new LogMessage("Couldn't ping " + subscriber.getName(),
+                            LocalDateTime.now(),
+                            -1L)
             );
         }
     }
 
     private Long retrieveRequestTime(HttpHeaders headers) {
-        return headers.get("REQUEST_TIME").stream()
+        return headers.get(RestTemplateConfiguration.REQUEST_TIME_HEADER).stream()
                 .findAny()
                 .map(Long::valueOf)
                 .orElseThrow(() -> new IllegalStateException("Couldn't retrieve request time header"));
     }
+
 }

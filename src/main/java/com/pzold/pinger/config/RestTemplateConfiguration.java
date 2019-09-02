@@ -13,6 +13,8 @@ import java.io.IOException;
 @Configuration
 public class RestTemplateConfiguration {
 
+    public static final String REQUEST_TIME_HEADER = "REQUEST_TIME";
+
     @Bean
     public RestTemplate restTemplate() {
         final var restTemplate = new RestTemplate();
@@ -28,7 +30,7 @@ public class RestTemplateConfiguration {
             final var startTime = System.currentTimeMillis();
             final var response = execution.execute(request, body);
             final var endTime = System.currentTimeMillis();
-            response.getHeaders().add("REQUEST_TIME", Long.toString(endTime - startTime));
+            response.getHeaders().add(REQUEST_TIME_HEADER, Long.toString(endTime - startTime));
             return response;
         }
     }
