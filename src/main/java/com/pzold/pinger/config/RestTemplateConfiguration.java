@@ -3,12 +3,18 @@ package com.pzold.pinger.config;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpRequest;
+import org.springframework.http.MediaType;
 import org.springframework.http.client.ClientHttpRequestExecution;
 import org.springframework.http.client.ClientHttpRequestInterceptor;
 import org.springframework.http.client.ClientHttpResponse;
+import org.springframework.http.converter.HttpMessageConverter;
+import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.web.client.RestTemplate;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 @Configuration
 public class RestTemplateConfiguration {
@@ -18,9 +24,16 @@ public class RestTemplateConfiguration {
     @Bean
     public RestTemplate restTemplate() {
         final var restTemplate = new RestTemplate();
-        var interceptors = restTemplate.getInterceptors();
+
+        final var interceptors = restTemplate.getInterceptors();
         interceptors.add(new RestTemplateInterceptor());
-        restTemplate.setInterceptors(interceptors);
+        restTemplate.setInterceptors(interceptors); // measure request time
+
+        final var messageConverters = new ArrayList<HttpMessageConverter<?>>();
+        final var converter = new MappingJackson2HttpMessageConverter();
+        converter.setSupportedMediaTypes(Collections.singletonList(MediaType.ALL));
+        messageConverters.add(converter);
+        restTemplate.setMessageConverters(messageConverters); // accept all responses
         return restTemplate;
     }
 
