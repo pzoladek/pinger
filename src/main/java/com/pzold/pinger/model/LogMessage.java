@@ -1,8 +1,6 @@
 package com.pzold.pinger.model;
 
-import com.pzold.pinger.config.LogMessageListener;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -11,7 +9,6 @@ import java.io.Serializable;
 import java.time.LocalDateTime;
 
 @Entity
-@EntityListeners(LogMessageListener.class)
 @Table(name = "LOGS", schema = "logs")
 @Data
 @NoArgsConstructor

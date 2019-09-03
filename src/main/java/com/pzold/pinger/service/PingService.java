@@ -47,6 +47,8 @@ public class PingService {
                             -1L)
             );
         }
+
+        logService.limitNumberOfLogs();
     }
 
     private Long retrieveRequestTime(HttpHeaders headers) {
@@ -55,5 +57,4 @@ public class PingService {
                 .map(Long::valueOf)
                 .orElseThrow(() -> new IllegalStateException("Couldn't retrieve request time header"));
     }
-
 }
