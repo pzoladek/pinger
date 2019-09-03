@@ -78,7 +78,7 @@ public class PingServiceTest {
         // when
         pingServiceSpy.ping();
 
-        // then new LogMessage("Pinged app-name2 with code 200 OK", any(), 1234L)
+        // then
         verify(logRepository).save(argThat(lm ->
                 lm.getMessage().equals("Pinged app-name2 with code 200 OK") && lm.getRequestTimeMillis() == 1234L));
     }
