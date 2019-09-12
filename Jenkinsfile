@@ -1,9 +1,10 @@
 pipeline {
-    agent { docker { image 'gradle:latest' } }
+    agent { dockerfile true }
     stages {
         stage('build') {
             steps {
-                sh 'gradle --version'
+                sh 'echo "testuje eho"'
+                sh 'docker build -t pinger-img .'
             }
         }
     }
