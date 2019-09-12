@@ -36,10 +36,10 @@ public class PingServiceTest {
     private RestTemplate restTemplate;
 
     @MockBean
-    private LogRepository logRepository;
+    private SubscriberService subscriberService;
 
     @MockBean
-    private SubscriberService subscriberService;
+    private LogService logService;
 
     @Before
     public void setUp() throws Exception {
@@ -65,8 +65,7 @@ public class PingServiceTest {
         pingServiceSpy.ping();
 
         // then
-        verify(logRepository).save(argThat(lm ->
-                lm.getMessage().equals("Couldn't ping app-name1") && lm.getRequestTimeMillis() == -1L));
+        verify(logService).save(argThat(lm -> lm.getMessage().equals("Couldn't ping app-name1") && lm.getRequestTimeMillis() == -1L));
     }
 
     @Test
@@ -79,7 +78,7 @@ public class PingServiceTest {
         pingServiceSpy.ping();
 
         // then
-        verify(logRepository).save(argThat(lm ->
+        verify(logService).save(argThat(lm ->
                 lm.getMessage().equals("Pinged app-name2 with code 200 OK") && lm.getRequestTimeMillis() == 1234L));
     }
 

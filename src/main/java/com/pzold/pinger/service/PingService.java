@@ -36,7 +36,7 @@ public class PingService {
 
     private void sendHttpGet(Subscriber subscriber) {
         try {
-            final var response = restTemplate.exchange(subscriber.getUrl(), HttpMethod.GET, prepareHttpEntity(), String.class); //TODO: consider http entity accept-header
+            final var response = restTemplate.exchange(subscriber.getUrl(), HttpMethod.GET, null, Object.class); //TODO: consider http entity accept-header
             logService.save(
                     new LogMessage("Pinged " + subscriber.getName() + " with code " + response.getStatusCode().toString(),
                             LocalDateTime.now(),
