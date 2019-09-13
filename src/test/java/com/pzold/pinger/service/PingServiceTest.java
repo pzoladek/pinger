@@ -43,9 +43,9 @@ public class PingServiceTest {
 
     @Before
     public void setUp() throws Exception {
-        when(restTemplate.exchange("http://bad-url/", HttpMethod.GET, null, Object.class))
+        when(restTemplate.exchange(eq("http://bad-url/"), eq(HttpMethod.GET), any(), eq(String.class)))
                 .thenThrow(RestClientException.class);
-        when(restTemplate.exchange("http://good-url/", HttpMethod.GET, null, Object.class))
+        when(restTemplate.exchange(eq("http://good-url/"), eq(HttpMethod.GET), any(), eq(String.class)))
                 .thenReturn(ResponseEntity.ok().header(RestTemplateConfiguration.REQUEST_TIME_HEADER, "1234").build());
     }
 
