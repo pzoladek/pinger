@@ -27,8 +27,4 @@ public class Subscriber {
         this.url = url;
         this.subscriptionDate = subscriptionDate;
     }
-
-    public static Subscriber of(com.pzold.pinger.model.Subscriber subscriber) {
-        return new Subscriber(subscriber.getName(), subscriber.getUrl(), subscriber.getSubscriptionDate());
-    }
 }

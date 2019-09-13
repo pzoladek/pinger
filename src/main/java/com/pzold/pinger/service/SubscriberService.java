@@ -27,13 +27,13 @@ public class SubscriberService {
                     throw new SubscriberAlreadyExistsException("Subscriber's name or url already exists.");
                 });
 
-        return Subscriber.of(subscriberRepository.save(modelOf(subscriber)));
+        return dtoOf(subscriberRepository.save(modelOf(subscriber)));
     }
 
     public List<Subscriber> getAllSubscribers() {
         return subscriberRepository.findAll()
                 .stream()
-                .map(Subscriber::of)
+                .map(this::dtoOf)
                 .collect(Collectors.toList());
     }
 
@@ -47,6 +47,10 @@ public class SubscriberService {
 
 
         subscriberRepository.deleteById(subscriber.getName());
+    }
+
+    private Subscriber dtoOf(com.pzold.pinger.model.Subscriber subscriber) {
+        return new Subscriber(subscriber.getName(), subscriber.getUrl(), subscriber.getSubscriptionDate());
     }
 
     private com.pzold.pinger.model.Subscriber modelOf(Subscriber subscriber) {

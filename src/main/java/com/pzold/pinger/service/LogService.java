@@ -29,7 +29,7 @@ public class LogService {
     public List<LogMessage> getRecentPingLogs() {
         return logRepository.findTop15ByOrderByIdDesc()
                 .stream()
-                .map(LogMessage::of)
+                .map(this::dtoOf)
                 .collect(Collectors.toList());
     }
 
@@ -37,13 +37,13 @@ public class LogService {
     public List<LogMessage> getAllPingLogs() {
         return logRepository.findAll(new Sort(Sort.Direction.DESC, "timestamp"))
                 .stream()
-                .map(LogMessage::of)
+                .map(this::dtoOf)
                 .collect(Collectors.toList());
     }
 
     @Transactional
     public LogMessage save(final LogMessage logMessage) {
-        return LogMessage.of(logRepository.save(modelOf(logMessage)));
+        return dtoOf(logRepository.save(modelOf(logMessage)));
     }
 
     @Transactional
@@ -58,6 +58,10 @@ public class LogService {
                 .stream()
                 .limit(numberOfRecords)
                 .forEach(lm -> logRepository.deleteById(lm.getId()));
+    }
+
+    private LogMessage dtoOf(com.pzold.pinger.model.LogMessage logMessage) {
+        return new LogMessage(logMessage.getMessage(), logMessage.getTimestamp(), logMessage.getRequestTimeMillis());
     }
 
     private com.pzold.pinger.model.LogMessage modelOf(final LogMessage logMessage) {

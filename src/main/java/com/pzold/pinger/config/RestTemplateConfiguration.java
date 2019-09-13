@@ -21,10 +21,8 @@ public class RestTemplateConfiguration {
     @Bean
     public RestTemplate restTemplate() {
         final var restTemplate = new RestTemplate();
-
-        final var interceptors = restTemplate.getInterceptors();
-        interceptors.add(new RestTemplateInterceptor());
-        restTemplate.setInterceptors(interceptors); // measure request time
+        
+        restTemplate.getInterceptors().add(new RequestTimeMeasurementInterceptor()); // measure request time
 
         final var converter = new StringHttpMessageConverter();
         converter.setSupportedMediaTypes(Collections.singletonList(MediaType.ALL)); // accept all responses
@@ -32,7 +30,7 @@ public class RestTemplateConfiguration {
         return restTemplate;
     }
 
-    private class RestTemplateInterceptor implements ClientHttpRequestInterceptor {
+    private class RequestTimeMeasurementInterceptor implements ClientHttpRequestInterceptor {
         @Override
         public ClientHttpResponse intercept(HttpRequest request, byte[] body, ClientHttpRequestExecution execution) throws IOException {
             final var startTime = System.currentTimeMillis();
