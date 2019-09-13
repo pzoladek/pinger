@@ -1,6 +1,8 @@
 package com.pzold.pinger.service;
 
 import com.pzold.pinger.dto.Subscriber;
+import com.pzold.pinger.exception.SubscriberAlreadyExistsException;
+import com.pzold.pinger.exception.SubscriberNotFoundException;
 import com.pzold.pinger.repository.SubscriberRepository;
 import org.springframework.stereotype.Service;
 
@@ -18,6 +20,13 @@ public class SubscriberService {
     }
 
     public Subscriber subscribe(final Subscriber subscriber) {
+        subscriberRepository.findAll().stream()
+                .filter(sub -> sub.getName().equals(subscriber.getName()) || sub.getUrl().equals(subscriber.getUrl()))
+                .findAny()
+                .ifPresent(s -> {
+                    throw new SubscriberAlreadyExistsException("Subscriber's name or url already exists.");
+                });
+
         return Subscriber.of(subscriberRepository.save(modelOf(subscriber)));
     }
 
@@ -29,21 +38,18 @@ public class SubscriberService {
     }
 
     public void unsubscribe(final Subscriber subscriber) {
-        final var subscriptionUrl = subscriber.getUrl();
-        if (subscriberRepository.existsById(subscriptionUrl)) {
-            validateSubscriberName(subscriber.getName(), subscriberRepository.findById(subscriptionUrl).get().getName());
-            subscriberRepository.deleteById(subscriptionUrl);
-        }
+        subscriberRepository.findAll().stream()
+                .filter(sub -> sub.getName().equals(subscriber.getName()) && sub.getUrl().equals(subscriber.getUrl()))
+                .findAny()
+                .orElseThrow(() -> {
+                    throw new SubscriberNotFoundException("Subscriber does not exist.");
+                });
+
+
+        subscriberRepository.deleteById(subscriber.getName());
     }
 
     private com.pzold.pinger.model.Subscriber modelOf(Subscriber subscriber) {
         return new com.pzold.pinger.model.Subscriber(subscriber.getUrl(), subscriber.getName(), LocalDateTime.now());
     }
-
-    private void validateSubscriberName(final String dtoName, final String modelName) {
-        if (!dtoName.equalsIgnoreCase(modelName)) {
-            throw new IllegalArgumentException("Subscriber's name does not match subscribed website's name.");
-        }
-    }
-
 }

@@ -3,8 +3,6 @@ package com.pzold.pinger.service;
 import com.pzold.pinger.config.RestTemplateConfiguration;
 import com.pzold.pinger.config.SchedulerConfiguration;
 import com.pzold.pinger.dto.Subscriber;
-import com.pzold.pinger.model.LogMessage;
-import com.pzold.pinger.repository.LogRepository;
 import org.awaitility.Duration;
 import org.junit.Before;
 import org.junit.Test;
@@ -65,7 +63,7 @@ public class PingServiceTest {
         pingServiceSpy.ping();
 
         // then
-        verify(logService).save(argThat(lm -> lm.getMessage().equals("Couldn't ping app-name1") && lm.getRequestTimeMillis() == -1L));
+        verify(logService).save(argThat(lm -> lm.getMessage().contains("Couldn't ping app-name1") && lm.getRequestTimeMillis() == -1L));
     }
 
     @Test
@@ -79,7 +77,7 @@ public class PingServiceTest {
 
         // then
         verify(logService).save(argThat(lm ->
-                lm.getMessage().equals("Pinged app-name2 with code 200 OK") && lm.getRequestTimeMillis() == 1234L));
+                lm.getMessage().contains("Pinged app-name2 with code 200 OK") && lm.getRequestTimeMillis() == 1234L));
     }
 
 }

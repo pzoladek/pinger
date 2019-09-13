@@ -1,5 +1,6 @@
 package com.pzold.pinger.service;
 
+import com.google.common.base.Throwables;
 import com.pzold.pinger.config.RestTemplateConfiguration;
 import com.pzold.pinger.dto.Subscriber;
 import com.pzold.pinger.dto.LogMessage;
@@ -45,7 +46,7 @@ public class PingService {
         } catch (Exception e) {
             e.printStackTrace();
             logService.save(
-                    new LogMessage("Couldn't ping " + subscriber.getName(),
+                    new LogMessage("Couldn't ping " + subscriber.getName() + ": " + e.getMessage(),
                             LocalDateTime.now(),
                             -1L)
             );
