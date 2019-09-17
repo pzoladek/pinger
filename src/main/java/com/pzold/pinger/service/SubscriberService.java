@@ -1,5 +1,6 @@
 package com.pzold.pinger.service;
 
+import com.pzold.pinger.dto.Metric;
 import com.pzold.pinger.dto.Subscriber;
 import com.pzold.pinger.exception.SubscriberAlreadyExistsException;
 import com.pzold.pinger.exception.SubscriberNotFoundException;
@@ -14,9 +15,12 @@ import java.util.stream.Collectors;
 public class SubscriberService {
 
     private final SubscriberRepository subscriberRepository;
+    private final MetricsService metricsService;
 
-    public SubscriberService(final SubscriberRepository subscriberRepository) {
+    public SubscriberService(final SubscriberRepository subscriberRepository,
+                             final MetricsService metricsService) {
         this.subscriberRepository = subscriberRepository;
+        this.metricsService = metricsService;
     }
 
     public Subscriber subscribe(final Subscriber subscriber) {
@@ -27,6 +31,7 @@ public class SubscriberService {
                     throw new SubscriberAlreadyExistsException("Subscriber's name or url already exists.");
                 });
 
+        metricsService.increment(Metric.SUBSCRIBED);
         return dtoOf(subscriberRepository.save(modelOf(subscriber)));
     }
 
@@ -45,7 +50,7 @@ public class SubscriberService {
                     throw new SubscriberNotFoundException("Subscriber does not exist.");
                 });
 
-
+        metricsService.increment(Metric.UNSUBSCRIBED);
         subscriberRepository.deleteById(subscriber.getName());
     }
 
@@ -54,6 +59,6 @@ public class SubscriberService {
     }
 
     private com.pzold.pinger.model.Subscriber modelOf(Subscriber subscriber) {
-        return new com.pzold.pinger.model.Subscriber(subscriber.getUrl(), subscriber.getName(), LocalDateTime.now());
+        return new com.pzold.pinger.model.Subscriber(subscriber.getName(), subscriber.getUrl(), LocalDateTime.now());
     }
 }

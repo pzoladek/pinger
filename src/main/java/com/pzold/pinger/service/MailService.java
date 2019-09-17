@@ -3,7 +3,6 @@ package com.pzold.pinger.service;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -21,13 +20,12 @@ public class MailService {
         this.sentTo = sentTo;
     }
 
-    @Scheduled(fixedRateString = "${mail.scheduling.rate}")
-    public void sendAdminMail() {
+    public void sendAdminMail(final String subject, final String text) {
         final var message = new SimpleMailMessage();
         message.setFrom(sentFrom);
         message.setTo(sentTo);
-        message.setSubject("pinger test email");
-        message.setText("Hi, it's test mail from pinger app.");
+        message.setSubject(subject);
+        message.setText(text);
         mailSender.send(message);
     }
 }

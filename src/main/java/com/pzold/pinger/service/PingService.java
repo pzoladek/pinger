@@ -2,6 +2,7 @@ package com.pzold.pinger.service;
 
 import com.google.common.base.Throwables;
 import com.pzold.pinger.config.RestTemplateConfiguration;
+import com.pzold.pinger.dto.Metric;
 import com.pzold.pinger.dto.Subscriber;
 import com.pzold.pinger.dto.LogMessage;
 import org.springframework.http.HttpEntity;
@@ -21,13 +22,16 @@ public class PingService {
     private final RestTemplate restTemplate;
     private final LogService logService;
     private final SubscriberService subscriberService;
+    private final MetricsService metricsService;
 
     public PingService(final RestTemplate restTemplate,
                        final LogService logService,
-                       final SubscriberService subscriberService) {
+                       final SubscriberService subscriberService,
+                       final MetricsService metricsService) {
         this.restTemplate = restTemplate;
         this.logService = logService;
         this.subscriberService = subscriberService;
+        this.metricsService = metricsService;
     }
 
     @Scheduled(fixedRateString = "${ping.scheduling.rate}")
@@ -43,13 +47,14 @@ public class PingService {
                             LocalDateTime.now(),
                             retrieveRequestTime(response.getHeaders()))
             );
+            metricsService.increment(Metric.PING_SUCCESS);
         } catch (Exception e) {
-            e.printStackTrace();
             logService.save(
                     new LogMessage("Couldn't ping " + subscriber.getName() + ": " + e.getMessage(),
                             LocalDateTime.now(),
                             -1L)
             );
+            metricsService.increment(Metric.PING_FAILURE);
         }
 
         logService.limitNumberOfLogs();

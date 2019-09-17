@@ -39,6 +39,9 @@ public class PingServiceTest {
     @MockBean
     private LogService logService;
 
+    @MockBean
+    private MetricsService metricsService;
+
     @Before
     public void setUp() throws Exception {
         when(restTemplate.exchange(eq("http://bad-url/"), eq(HttpMethod.GET), any(), eq(String.class)))

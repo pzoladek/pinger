@@ -15,11 +15,11 @@ import java.time.LocalDateTime;
 public class Subscriber {
 
     @Id
-    @Column(name = "URL")
-    private String url;
-
     @Column(name = "NAME")
     private String name;
+
+    @Column(name = "URL")
+    private String url;
 
     @Column(name = "SUBSCRIPTION_DATE")
     private LocalDateTime subscriptionDate;
